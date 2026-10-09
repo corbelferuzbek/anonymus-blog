@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="fw-bold mb-4">Tashriflar Statistikasi</h2>
+<div class="row text-center mb-5 g-3">
+    <div class="col-md-3">
+        <div class="stat-card bg-gradient bg-primary">
+            <h6 class="text-uppercase small fw-bold opacity-75">Kunlik</h6>
+            <h2 class="fw-bold mb-0">{{ stats.daily }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-gradient bg-success">
+            <h6 class="text-uppercase small fw-bold opacity-75">Haftalik</h6>
+            <h2 class="fw-bold mb-0">{{ stats.weekly }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-gradient bg-warning text-dark">
+            <h6 class="text-uppercase small fw-bold opacity-75">Oylik</h6>
+            <h2 class="fw-bold mb-0">{{ stats.monthly }}</h2>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-card bg-gradient bg-info">
+            <h6 class="text-uppercase small fw-bold opacity-75">Yillik</h6>
+            <h2 class="fw-bold mb-0">{{ stats.yearly }}</h2>
+        </div>
+    </div>
+</div>
+
+<div class="card p-4 shadow-sm mb-5">
+    <h4 class="fw-bold mb-4 text-primary"><i class="fa-solid fa-pen-to-square me-2"></i>Yangi Post Qo'shish</h4>
+    <form action="/admin/post/new" method="POST">
+        <div class="mb-3">
+            <label class="form-label fw-bold small">Sarlavha</label>
+            <input type="text" name="title" class="form-control" placeholder="Post sarlavhasini kiriting..." required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold small">Rasm URL (ixtiyoriy)</label>
+            <input type="url" name="image_url" class="form-control" placeholder="https://example.com/image.jpg">
+        </div>
+        <div class="mb-3">
+            <label class="form-label fw-bold small">Matn (Ssilka qo'shish uchun: <code class="text-danger">&lt;a href="url" target="_blank"&gt;matn&lt;/a&gt;</code>)</label>
+            <textarea name="content" class="form-control" rows="6" placeholder="Post matnini yozing..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-success btn-custom px-4"><i class="fa-solid fa-upload me-1"></i> Chop etish</button>
+    </form>
+</div>
+
+<div class="card p-4 shadow-sm">
+    <h4 class="fw-bold mb-4"><i class="fa-solid fa-list me-2"></i>Mavjud Postlar</h4>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Sarlavha</th>
+                    <th>Sana</th>
+                    <th class="text-end">Amal</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for post in posts %}
+                <tr>
+                    <td class="fw-semibold">{{ post.title }}</td>
+                    <td class="text-muted small">{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td class="text-end">
+                        <form action="/admin/post/delete/{{ post.id }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Haqiqatan ham o‘chirmoqchimisiz?')"><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="text-center text-muted py-3">Postlar topilmadi.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

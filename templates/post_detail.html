@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-lg p-4 p-md-5 bg-white">
+            <h1 class="fw-bold text-dark mb-3">{{ post.title }}</h1>
+            <p class="text-muted mb-4"><i class="fa-regular fa-clock me-1"></i>{{ post.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+            
+            {% if post.image_url %}
+            <div class="mb-4 text-center">
+                <img src="{{ post.image_url }}" class="img-fluid rounded shadow" style="max-height: 450px; width: 100%; object-fit: cover;" alt="Post rasmi">
+            </div>
+            {% endif %}
+
+            <div class="content-body text-secondary fs-6 lh-lg" style="white-space: pre-line; word-break: break-word;">
+                {{ post.content | safe }}
+            </div>
+
+            <hr class="my-4">
+            <a href="/" class="btn btn-outline-secondary btn-custom"><i class="fa-solid fa-arrow-left me-2"></i>Orqaga qaytish</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

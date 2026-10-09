@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card p-4 shadow-lg border-0">
+            <div class="text-center mb-4">
+                <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center shadow" style="width: 60px; height: 60px;">
+                    <i class="fa-solid fa-lock fa-lg"></i>
+                </div>
+                <h3 class="fw-bold mt-3">Admin Panel</h3>
+            </div>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label text-muted small fw-bold">PAROL</label>
+                    <input type="password" name="password" class="form-control form-control-lg bg-light" placeholder="Parolni kiriting" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-custom w-100 py-2 shadow-sm">Kirish</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
