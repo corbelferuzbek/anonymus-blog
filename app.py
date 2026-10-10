@@ -23,7 +23,7 @@ class Visitor(db.Model):
   visit_time = db.Column(db.DateTime, default=datetime.utcnow)
 
 
-# Bazani avtomatik yaratish (kontekst bilan)
+# Bazani avtomatik yaratish
 with app.app_context():
   try:
     db.create_all()
@@ -58,7 +58,6 @@ def index():
 
 
 # Admin panel (Post qo'shish va ro'yxatni ko'rish)
-# Admin panel (Post qo'shish va ro'yxatni ko'rish)
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
   if request.method == 'POST':
@@ -84,12 +83,15 @@ def admin():
     posts = []
     visitor_count = 0
 
-  # admin.html talab qilayotgan stats obyektini yaratamiz
+  # Admin shabloni uchun stats obyektini to'liq shakllantiramiz
   stats = {
       'daily': visitor_count
   }
 
+  # stats o'zgaruvchisi majburiy tarzda uzatilmoqda
   return render_template('admin.html', posts=posts, stats=stats)
+
+
 # Postni o'chirish
 @app.route('/admin/delete/<int:id>')
 def delete_post(id):
