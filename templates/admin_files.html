@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Fayl menejeri · {{ site.name }}{% endblock %}
+{% block adminbar_extra %}
+  <a href="{{ url_for('admin_files') }}">Fayllar</a>
+{% endblock %}
+{% block content %}
+<div class="wrap admin">
+  <div class="admin-head">
+    <div>
+      <span class="kicker">Admin</span>
+      <h1>Fayl menejeri</h1>
+      {% if crumbs or folder %}
+      <nav class="crumbs">
+        <a href="{{ url_for('admin_files') }}">Asosiy</a>
+        {% for c in crumbs %}
+          <span>/</span>
+          {% if loop.last %}
+            <span>{{ c.name }}</span>
+          {% else %}
+            <a href="{{ url_for('admin_files', folder_id=c.id) }}">{{ c.name }}</a>
+          {% endif %}
+        {% endfor %}
+      </nav>
+      {% endif %}
+    </div>
+    <div class="actions">
+      <a class="btn ghost" href="{{ url_for('admin') }}">← Panel</a>
+    </div>
+  </div>
+
+  <div class="two fm-forms">
+    <section class="panel">
+      <h3>Yangi papka</h3>
+      <form method="post" action="{{ url_for('admin_create_folder') }}" class="stack">
+        <input type="hidden" name="csrf" value="{{ csrf() }}">
+        <input type="hidden" name="parent_id" value="{{ folder.id if folder else '' }}">
+        <input name="name" type="text" placeholder="Papka nomi" maxlength="80" required>
+        <label class="check"><input type="checkbox" name="public" value="1" checked> Ommaviy</label>
+        <button class="btn" type="submit">Yaratish</button>
+      </form>
+    </section>
+    <section class="panel">
+      <h3>Fayl yuklash</h3>
+      <form method="post" action="{{ url_for('admin_upload_file') }}" enctype="multipart/form-data" class="stack">
+        <input type="hidden" name="csrf" value="{{ csrf() }}">
+        <input type="hidden" name="parent_id" value="{{ folder.id if folder else '' }}">
+        <input name="file" type="file" required>
+        <label class="check"><input type="checkbox" name="public" value="1" checked> Ommaviy</label>
+        <button class="btn" type="submit">Yuklash</button>
+      </form>
+    </section>
+  </div>
+
+  <h2 class="sec">
+    {% if folder %}{{ folder.name }}{% else %}Asosiy papka{% endif %}
+    <span class="meta">({{ folders|length }} papka, {{ files|length }} fayl)</span>
+  </h2>
+
+  <section class="panel list">
+    {% for f in folders %}
+    <div class="item">
+      <div class="info">
+        <a href="{{ url_for('admin_files', folder_id=f.id) }}"><b>📁 {{ f.name }}</b></a>
+        <span class="meta">
+          {% if f.public %}<span class="tag ok">ommaviy</span>{% else %}<span class="tag">yashirin</span>{% endif %}
+          · {{ f.created_at|kun }}
+        </span>
+      </div>
+      <div class="row-actions">
+        <form method="post" action="{{ url_for('admin_toggle_folder', fid=f.id) }}">
+          <input type="hidden" name="csrf" value="{{ csrf() }}">
+          <button class="btn ghost sm" type="submit">{% if f.public %}Yashirish{% else %}Ommaviy{% endif %}</button>
+        </form>
+        <form method="post" action="{{ url_for('admin_delete_folder', fid=f.id) }}" onsubmit="return confirm('Papka va ichidagilar o\'chirilsinmi?')">
+          <input type="hidden" name="csrf" value="{{ csrf() }}">
+          <button class="btn ghost sm danger" type="submit">O'chirish</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% for f in files %}
+    <div class="item">
+      <div class="info">
+        <a href="{{ url_for('file_download', file_id=f.id, name=f.name) }}"><b>📄 {{ f.name }}</b></a>
+        <span class="meta">
+          {{ f.size|fsize }} · {{ f.downloads|num }} yuklab olish
+          · {% if f.public %}<span class="tag ok">ommaviy</span>{% else %}<span class="tag">yashirin</span>{% endif %}
+          · {{ f.created_at|kun }}
+        </span>
+        <code class="copy">/f/{{ f.id }}</code>
+      </div>
+      <div class="row-actions">
+        <form method="post" action="{{ url_for('admin_toggle_file', fid=f.id) }}">
+          <input type="hidden" name="csrf" value="{{ csrf() }}">
+          <button class="btn ghost sm" type="submit">{% if f.public %}Yashirish{% else %}Ommaviy{% endif %}</button>
+        </form>
+        <form method="post" action="{{ url_for('admin_delete_file', fid=f.id) }}" onsubmit="return confirm('Fayl o\'chirilsinmi?')">
+          <input type="hidden" name="csrf" value="{{ csrf() }}">
+          <button class="btn ghost sm danger" type="submit">O'chirish</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+
+    {% if not folders and not files %}
+    <p class="empty">Hali hech narsa yo'q. Yuqoridan papka yarating yoki fayl yuklang.</p>
+    {% endif %}
+  </section>
+
+  <p class="fine">Postlarda rasm yoki havola qo'shish uchun: <code>![alt](/f/ID)</code> yoki <code>[matn](/f/ID)</code></p>
+</div>
+{% endblock %}
