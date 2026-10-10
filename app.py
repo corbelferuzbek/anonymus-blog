@@ -58,6 +58,7 @@ def index():
 
 
 # Admin panel (Post qo'shish va ro'yxatni ko'rish)
+# Admin panel (Post qo'shish va ro'yxatni ko'rish)
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
   if request.method == 'POST':
@@ -78,12 +79,17 @@ def admin():
 
   try:
     posts = Post.query.order_by(Post.date_posted.desc()).all()
+    visitor_count = Visitor.query.count()
   except Exception:
     posts = []
+    visitor_count = 0
 
-  return render_template('admin.html', posts=posts)
+  # admin.html talab qilayotgan stats obyektini yaratamiz
+  stats = {
+      'daily': visitor_count
+  }
 
-
+  return render_template('admin.html', posts=posts, stats=stats)
 # Postni o'chirish
 @app.route('/admin/delete/<int:id>')
 def delete_post(id):
